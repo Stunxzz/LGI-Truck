@@ -1,0 +1,29 @@
+    .nav-link {
+        color: black;
+    }
+
+    .nav-link i {
+        color: black;
+    }
+    .menu-item-label {
+    font-size: 16px;
+    font-weight: bold;
+}
+    .nav-item.active .nav-link {
+        color: #007bff;
+        font-weight: bold;
+    }
+    .nav-item.active .nav-link i {
+    color: #007bff;
+
+}
+#modal-btn {
+    display: none;
+}
+
+
+@media (max-width: 768px) {
+    #modal-btn {
+        display: block;
+    }
+}

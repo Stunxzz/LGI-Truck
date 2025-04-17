@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <meta charset="UTF-8">
+    <title>{% block title %}My Site{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.4.6.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweet-alert.css' %}">
+    <link rel="stylesheet" href="{% static 'css/webfonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/datagrid.css' %}">
+    <script src="{% static 'js/jquery.3.5.1.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/sweet-alert.js' %}"></script>
+
+    <style>
+        .errorlist {
+            color: red; /* Боядисваме съобщението за грешка в червено */
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none; /* Това ще скрие съобщението */
+        }
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">MySite</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    {% block content %}{% endblock %}
+</div>
+
+{% block extra_scripts %}{% endblock %}
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let errorMessages = document.querySelectorAll('.errorlist');
+
+        errorMessages.forEach(function (message) {
+            message.classList.remove('hidden');
+
+            setTimeout(function () {
+                message.classList.add('hidden');
+            }, 5000);
+        });
+    });
+</script>
+</body>
+</html>

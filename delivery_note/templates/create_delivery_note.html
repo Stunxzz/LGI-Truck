@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Create Delivery Note</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_plant_transfer">UP (Plant Transfer)</label>
+            {{ form.up }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_plant">Plant</label>
+            {{ form.plant }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_package_type">Package Type</label>
+            {{ form.package_type }}
+        </div>
+
+        {{ form.delivery_note_number.label_tag }} {{ form.delivery_note_number }}
+        {{ form.loading_date.label_tag }} {{ form.loading_date }}
+        {{ form.unloading_date.label_tag }} {{ form.unloading_date }}
+        {{ form.package_count.label_tag }} {{ form.package_count }}
+        {{ form.total_height.label_tag }} {{ form.total_height }}
+        {{ form.total_weight.label_tag }} {{ form.total_weight }}
+        {{ form.value.label_tag }} {{ form.value }}
+        {{ form.created_by.label_tag }} {{ form.created_by }}
+
+        <button type="submit" class="btn btn-primary mt-3">Save</button>
+    </form>
+</div>
+<script>
+    const plantTransfers = {
+        {% for pt in plant_transfers %}
+            "{{ pt.up }}": "{{ pt.plant }}",
+        {% endfor %}
+    };
+
+    function updatePlantField(upSelect) {
+        const selectedUp = upSelect.value;
+        const plant = plantTransfers[selectedUp] || '';
+        $('#id_plant').val(plant);
+    }
+</script>
+
+
+{% endblock %}
