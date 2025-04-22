@@ -14,7 +14,7 @@ class CreateDeliveryNoteView(LoginRequiredMixin ,SuccessMessageMixin, CreateView
     model = DeliveryNote
     form_class = DeliveryNoteForm
     template_name = 'create_delivery_note.html'
-    success_url = reverse_lazy('delivery_note_list')  # Пренасочваме към списъка с Delivery Notes
+    success_url = reverse_lazy('delivery_note_list')
     success_message = "Delivery Note successfully created."
 
     def form_valid(self, form):
@@ -30,7 +30,7 @@ class CreateDeliveryNoteView(LoginRequiredMixin ,SuccessMessageMixin, CreateView
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user  # подаваме user към формата
+        kwargs['user'] = self.request.user
         return kwargs
 
 
@@ -51,7 +51,7 @@ class UpdateDeliveryNoteView(LoginRequiredMixin ,SuccessMessageMixin, UpdateView
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user  # подаваме user към формата
+        kwargs['user'] = self.request.user
         return kwargs
 
 
@@ -72,7 +72,7 @@ class DeleteDeliveryNoteView(LoginRequiredMixin, SuccessMessageMixin, View):
     def get(self, request, *args, **kwargs):
         delivery_note_id = self.kwargs['delivery_note_id']
         try:
-            DeliveryNote.objects.get(id=delivery_note_id).delete()
+            DeliveryNote.objects.filter(id=delivery_note_id).delete()
 
         except DeliveryNote.DoesNotExist:
             messages.error(request, 'Plant transfer does not exist.')

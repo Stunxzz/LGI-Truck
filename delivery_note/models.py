@@ -1,4 +1,6 @@
 from django.db import models
+
+from orders.models import Order
 from packages.models import Package
 from transfer.models import PlantTransfer
 from users.models import CustomUser
@@ -17,6 +19,8 @@ class DeliveryNote(models.Model):
     total_weight = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     value = models.FloatField(blank=True, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True, related_name='delivery_notes')
+
 
 
     def __str__(self):

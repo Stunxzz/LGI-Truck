@@ -44,7 +44,7 @@ class DeletePlantView(LoginRequiredMixin, View):
         plant_id = self.kwargs.get('plant_id')
 
         try:
-           PlantTransfer.objects.get(id=plant_id)
+           PlantTransfer.objects.filter(id=plant_id).delete()
 
         except PlantTransfer.DoesNotExist:
             messages.error(request, 'Plant transfer does not exist.')

@@ -6,12 +6,16 @@
     <title>{% block title %}My Site{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.4.6.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-table.css' %}">
     <link rel="stylesheet" href="{% static 'css/sweet-alert.css' %}">
-    <link rel="stylesheet" href="{% static 'css/webfonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/datagrid.css' %}">
+    
     <script src="{% static 'js/jquery.3.5.1.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.4.6.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/sweet-alert.js' %}"></script>
+    <script src="{% static 'js/all.js' %}"></script>
 
     <style>
         .errorlist {
@@ -40,7 +44,7 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     {% block content %}{% endblock %}
 </div>
 

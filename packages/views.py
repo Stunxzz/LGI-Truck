@@ -13,13 +13,14 @@ class PackageCreateView(LoginRequiredMixin, CreateView):
     template_name = 'create_packages.html'
     success_url = reverse_lazy('package_list')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_edit'] = False
+        return context
+
     def form_valid(self, form):
         messages.success(self.request, 'Package created successfully.')
         return super().form_valid(form)
-
-
-
-
 
 
 class PackageUpdateView(LoginRequiredMixin, UpdateView):
@@ -27,6 +28,11 @@ class PackageUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PackageForm
     template_name = 'create_packages.html'
     success_url = reverse_lazy('package_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, 'Package updated successfully.')

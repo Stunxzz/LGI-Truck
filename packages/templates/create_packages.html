@@ -1,9 +1,57 @@
 {% extends 'base.html' %}
-{% block content %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
 
-        <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+{% block content %}
+    <div class="container d-flex flex-column align-items-center mt-5">
+        <div class="card shadow p-4 w-100" style="max-width: 600px;">
+            <h3 class="text-center mb-4">
+                {% if is_edit %}
+                    ✏️ Edit Package
+                {% else %}
+                    ➕ Create Package
+                {% endif %}
+            </h3>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.type.label_tag }}
+                        {{ form.type }}
+                        {{ form.type.errors }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        {{ form.ldm.label_tag }}
+                        {{ form.ldm }}
+                        {{ form.ldm.errors }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.max_height.label_tag }}
+                        {{ form.max_height }}
+                        {{ form.max_height.errors }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        {{ form.max_weight.label_tag }}
+                        {{ form.max_weight }}
+                        {{ form.max_weight.errors }}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'package_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to list
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

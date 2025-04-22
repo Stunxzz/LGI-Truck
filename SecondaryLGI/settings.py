@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'packages',
     'transfer',
     'delivery_note',
+    'orders',
     'debug_toolbar'
 ]
 

@@ -24,7 +24,8 @@ urlpatterns = [
     path('', include('users.urls')),
     path('package/', include('packages.urls')),
     path('transfer/', include('transfer.urls')),
-    path('deliveryNote/', include('delivery_note.urls'))
+    path('deliveryNote/', include('delivery_note.urls')),
+    path('orders/', include('orders.urls')),
 ]
 if settings.DEBUG:
     import debug_toolbar

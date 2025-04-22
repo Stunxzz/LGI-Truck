@@ -1,51 +1,156 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Create Delivery Note</h2>
-    <form method="post">
-        {% csrf_token %}
+    <div class="container mt-5">
+        <div class="card shadow p-4 mx-auto" style="max-width: 700px;">
+            <h3 class="text-center mb-4">
+                {% if form.instance.pk %}
+                    ✏️ Edit Delivery Note
+                {% else %}
+                    ➕ Create Delivery Note
+                {% endif %}
+            </h3>
 
-        <div class="form-group">
-            <label for="id_plant_transfer">UP (Plant Transfer)</label>
-            {{ form.up }}
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        {{ form.delivery_note_number.label_tag }}
+                        {{ form.delivery_note_number }}
+                        {{ form.delivery_note_number.errors }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form.up.label_tag }}
+                        {{ form.up }}
+                        {{ form.up.errors }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.plant.label_tag }}
+                        {{ form.plant }}
+                        {{ form.plant.errors }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form.loading_date.label_tag }}
+                        {{ form.loading_date }}
+                        {{ form.loading_date.errors }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.unloading_date.label_tag }}
+                        {{ form.unloading_date }}
+                        {{ form.unloading_date.errors }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form.package_type.label_tag }}
+                        {{ form.package_type }}
+                        {{ form.package_type.errors }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.package_count.label_tag }}
+                        {{ form.package_count }}
+                        {{ form.package_count.errors }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form.total_height.label_tag }}
+                        {{ form.total_height }}
+                        {{ form.total_height.errors }}
+
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.total_weight.label_tag }}
+                        {{ form.total_weight }}
+                        {{ form.total_weight.errors }}
+
+                    </div>
+                </div>
+
+                {% if form.instance.pk and request.user.role == 'admin' or request.user.role == 'expeditor'%}
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            {{ form.value.label_tag }}
+                            {{ form.value }}
+                            {{ form.value.errors }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success btn-block">💾 Save</button>
+                    <a href="{% url 'delivery_note_list' %}" class="btn btn-secondary mt-2">← Back to List</a>
+                </div>
+            </form>
         </div>
+    </div>
+{% endblock %}
 
-        <div class="form-group">
-            <label for="id_plant">Plant</label>
-            {{ form.plant }}
-        </div>
+{% block extra_scripts %}
+    <!-- jQuery & jQuery UI for Datepicker -->
 
-        <div class="form-group">
-            <label for="id_package_type">Package Type</label>
-            {{ form.package_type }}
-        </div>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
-        {{ form.delivery_note_number.label_tag }} {{ form.delivery_note_number }}
-        {{ form.loading_date.label_tag }} {{ form.loading_date }}
-        {{ form.unloading_date.label_tag }} {{ form.unloading_date }}
-        {{ form.package_count.label_tag }} {{ form.package_count }}
-        {{ form.total_height.label_tag }} {{ form.total_height }}
-        {{ form.total_weight.label_tag }} {{ form.total_weight }}
-        {{ form.value.label_tag }} {{ form.value }}
-        {{ form.created_by.label_tag }} {{ form.created_by }}
+    <script>
+        $(function () {
+            let today = new Date();
+            let yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
 
-        <button type="submit" class="btn btn-primary mt-3">Save</button>
-    </form>
-</div>
-<script>
-    const plantTransfers = {
-        {% for pt in plant_transfers %}
-            "{{ pt.up }}": "{{ pt.plant }}",
-        {% endfor %}
-    };
+            if (mm < 10) mm = '0' + mm;
+            if (dd < 10) dd = '0' + dd;
 
-    function updatePlantField(upSelect) {
-        const selectedUp = upSelect.value;
-        const plant = plantTransfers[selectedUp] || '';
-        $('#id_plant').val(plant);
-    }
-</script>
+            let minToday = yyyy + '-' + mm + '-' + dd;
+
+            // Инициализиране на loading_date
+            $("#id_loading_date").datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: minToday,
+                onSelect: function (selectedDate) {
+                    // Когато изберем дата за loading_date
+                    let selected = new Date(selectedDate);
+                    selected.setDate(selected.getDate() + 1); // unloading да е поне следващия ден
+
+                    $("#id_unloading_date").datepicker("option", "minDate", selected);
+                }
+            });
+
+            // Инициализиране на unloading_date
+            $("#id_unloading_date").datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: minToday
+            });
 
 
+            // Create a mapping of UP -> plant
+            let plantTransfers = {
+                {% for pt in plant_transfers %}
+                    "{{ pt.up }}": "{{ pt.plant }}",
+                {% endfor %}
+            };
+
+            $('#id_up').on('change', function () {
+                let upValue = $(this).val();
+                let plantValue = plantTransfers[upValue];
+
+                if (plantValue) {
+                    $('#id_plant').val(plantValue);
+                } else {
+                    $('#id_plant').val('');
+                }
+            });
+        });
+    </script>
 {% endblock %}
