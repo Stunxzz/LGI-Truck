@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <h1 class="text-center my-4">Orders List</h1>
 
-    <form method="get" class="form-inline justify-content-center mb-4">
-    <div class="form-group mx-2">
-        {{ filter_form.loading_date.label_tag }}
-        {{ filter_form.loading_date }}
-    </div>
-    <div class="form-group mx-2">
-        {{ filter_form.status.label_tag }}
-        {{ filter_form.status }}
-    </div>
-    <button type="submit" class="btn btn-primary mx-2">Search</button>
-</form>
-
-    <table id="table" class="table table-bordered table-striped table-hover text-center datagrid">
+    <form method="get" class="d-flex align-items-center gap-2 mb-0" style="margin: 0; padding: 0;">
+        <div class="d-flex align-items-center">
+            {{ filter_form.loading_date }}
+        </div>
+        <div class="d-flex align-items-center">
+            {{ filter_form.status }}
+        </div>
+        <button type="submit" class="btn btn-outline-success">Search</button>
+        <button type="button" class="btn btn-secondary" onclick="exportToExcel()">Export</button>
+    </form>
+    <table id="table" class="table table-bordered table-striped table-hover text-center datagrid excelExport">
         <thead>
         <tr>
-             <th>ID</th>
+            <th>ID</th>
             <th>Up user</th>
             <th>Term of delivery</th>
             <th>UP</th>
@@ -50,20 +50,80 @@
             <td data-label="DELIVERY NOTES">
                 {% for delivery_note in order.delivery_notes.all %}
 
-                    <a href="{% url 'update_delivery_note' delivery_note.id %}">
-                        {{ delivery_note.delivery_note_number }}</a>
+                    <span  style="cursor: pointer; color: darkred" class="delivery-note " data-note="{{ delivery_note.delivery_note_number }}"
+                          onclick="goToNote({{ delivery_note.id }})">
+                 {{ delivery_note.delivery_note_number }}
+                </span><br>
+
                 {% endfor %}
             </td>
             <td data-label="VALUE">
                 {% for delivery_note in order.delivery_notes.all %}
-                    <span>{{ delivery_note.value }}</span>
+                    <span>{{ delivery_note.value }}</span><br>
 
                 {% endfor %}
             </td>
 
         {% endfor %}
         </tbody>
+        {{ ordersId|json_script:"orders-data" }}
     </table>
 
+    <script>
+        const ordersId = JSON.parse(document.getElementById('orders-data').textContent);
+
+        function goToNote(noteId) {
+            window.location.href = `/deliveryNote/update/${noteId}`;  // или
+        }
+
+        function exportToExcel() {
+            const table = document.getElementById('table');
+            let workbook = XLSX.utils.table_to_book(table, {raw: true});
+            XLSX.writeFile(workbook, 'export.xlsx');
+            updateOrderStatus(ordersId);
+        }
+
+        function updateOrderStatus(orderIds) {
+            if (orderIds.length === 0) {
+                return;
+            }
+            $.ajax({
+                url: 'update-order-status/',
+                type: 'POST',
+                data: JSON.stringify({orderIds: orderIds}),
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = '/orders';
+                    } else {
+
+                        alert('Failed to update order statuses: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred while updating order statuses: ' + error);
+                }
+            });
+        }
+
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 
 {% endblock %}

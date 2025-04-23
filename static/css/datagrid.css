@@ -505,6 +505,7 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     table.datagrid:not(.datagrid-empty) td > div,
     table.datagrid:not(.datagrid-empty) td > a,
     table.datagrid:not(.datagrid-empty) td > button,
+    table.datagrid:not(.datagrid-empty) td > span,
     table.datagrid:not(.datagrid-empty) td > input{
         display: flex;
         justify-content: flex-end;
@@ -514,14 +515,7 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
         z-index: 1;
     }
 }
-#table.datagrid td[data-label="DELIVERY NOTES"] > a {
-    margin-bottom: 5px;
-    display: block;
-}
-#table.datagrid td[data-label="VALUE"] > span{
-    margin-bottom: 5px;
-    display: block;
-}
+
 @media (max-width: 768px) {
   table.datagrid td[data-label="DELIVERY NOTES"],
   table.datagrid td[data-label="VALUE"]
