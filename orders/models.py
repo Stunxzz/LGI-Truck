@@ -1,16 +1,10 @@
+from math import ceil
 from django.db import models
+from packages.models import Package
 
-
-
-# Create your models here.
 
 class Order(models.Model):
-    STATUS_CHOICES = (
-        (0, 'Pending'),
-        (1, 'Completed'),
-    )
-
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+    status = models.IntegerField(default=0)
     up_user = models.CharField(max_length=100, default='151561')
     up = models.CharField(max_length=10)
     plant = models.CharField(max_length=10)
@@ -22,6 +16,18 @@ class Order(models.Model):
     height = models.FloatField()
     weight = models.FloatField()
     ldm = models.FloatField()
+
+    def calculate_ldm(self):
+        package = Package.objects.filter(type=self.packages_type).first()
+        if not package:
+            return
+        ldm_height = ceil(self.height/package.max_height) * package.ldm
+        ldm_weight = ceil(self.weight / package.max_weight) * package.ldm
+
+        self.ldm = max(ldm_height, ldm_weight)
+        self.save(update_fields=["ldm"])
+
+
 
 
     def __str__(self):

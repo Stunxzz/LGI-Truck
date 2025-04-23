@@ -55,6 +55,7 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
   min-width: 50px;
 }
 @media (max-width: 767px) {
+
   table.datagrid:not(.datagrid-empty) tbody,
   table.datagrid:not(.datagrid-empty) tr ,
   table.datagrid:not(.datagrid-empty) td { display: block; }
@@ -472,6 +473,8 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
     text-align: center;
     inline-size: 30%;
     padding: 18px;
+
+
   }
 
   table.datagrid:not(.datagrid-empty) td {
@@ -498,7 +501,7 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
         white-space: normal;
 
     }
-     /* custom add only for project light-measurement */
+
     table.datagrid:not(.datagrid-empty) td > div,
     table.datagrid:not(.datagrid-empty) td > a,
     table.datagrid:not(.datagrid-empty) td > button,
@@ -508,7 +511,28 @@ table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td.actions.actions-as-dro
         flex-wrap: wrap;
         gap: 5px;
         margin-left: 3px;
-        z-index: 1; /* Гарантира, че съдържанието е над ::before */
+        z-index: 1;
     }
 }
+#table.datagrid td[data-label="DELIVERY NOTES"] > a {
+    margin-bottom: 5px;
+    display: block;
+}
+#table.datagrid td[data-label="VALUE"] > span{
+    margin-bottom: 5px;
+    display: block;
+}
+@media (max-width: 768px) {
+  table.datagrid td[data-label="DELIVERY NOTES"],
+  table.datagrid td[data-label="VALUE"]
+  {
+    flex-direction: column;
+    align-items: flex-end;
+  }
 
+  table.datagrid td[data-label="DELIVERY NOTES"] > a,
+  table.datagrid td[data-label="VALUE"] > span{
+    display: block;
+    margin-bottom: 5px;
+  }
+}

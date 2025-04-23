@@ -18,13 +18,13 @@
     <script src="{% static 'js/all.js' %}"></script>
 
     <style>
-        .errorlist {
-            color: red; /* Боядисваме съобщението за грешка в червено */
+        {
+            color: red; 
             font-weight: bold;
         }
 
         .hidden {
-            display: none; /* Това ще скрие съобщението */
+            display: none; 
         }
     </style>
 
@@ -48,7 +48,33 @@
     {% block content %}{% endblock %}
 </div>
 
-{% block extra_scripts %}{% endblock %}
+{% block extra_scripts %}
+    <script>
+        function SweetAlert(type, message) {
+            let timer = 5000;//default
+
+            if (type !== 'success') {
+                timer = 8000;
+            }
+
+            Swal.fire({
+                icon: type,
+                title: type.toUpperCase(),
+                text: message,
+                timer: timer,
+                timerProgressBar: true,
+                showConfirmButton: true
+            });
+        }
+        
+    </script>
+    <script>
+    {% for message in messages %}
+   
+        SweetAlert('{{ message.tags }}', '{{ message|escapejs }}');
+    {% endfor %}
+        </script>
+{% endblock %}
 <script>
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -62,6 +88,8 @@
             }, 5000);
         });
     });
+    
 </script>
+
 </body>
 </html>
