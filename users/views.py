@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import CustomUserEditForm, UserProfileForm
 
 
-# ListView за всички потребители
 class UserListView(LoginRequiredMixin, ListView):
     model = CustomUser
     template_name = 'user_list.html'
