@@ -10,3 +10,6 @@ class PackageForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
+
+        self.fields['max_height'].widget.attrs['placeholder'] = 'in M'
+        self.fields['max_weight'].widget.attrs['placeholder'] = 'in KG'

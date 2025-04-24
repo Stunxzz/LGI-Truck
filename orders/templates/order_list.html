@@ -1,20 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
     <h1 class="text-center my-4">Orders List</h1>
 
-    <form method="get" class="d-flex align-items-center gap-2 mb-0" style="margin: 0; padding: 0;">
-        <div class="d-flex align-items-center">
-            {{ filter_form.loading_date }}
-        </div>
-        <div class="d-flex align-items-center">
-            {{ filter_form.status }}
-        </div>
-        <button type="submit" class="btn btn-outline-success">Search</button>
-        <button type="button" class="btn btn-secondary" onclick="exportToExcel()">Export</button>
-    </form>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <form method="get" class="d-flex align-items-center gap-2 m-0 p-0">
+            <div class="d-flex align-items-center">
+                {{ filter_form.loading_date }}
+            </div>
+            <div class="d-flex align-items-center">
+                {{ filter_form.status }}
+            </div>
+            <button type="submit" class="btn btn-outline-success">Search</button>
+            <button type="button" class="btn btn-secondary" onclick="exportToExcel()">Export</button>
+        </form>
+
+        <button type="button" id="hintBtn" class="btn btn-info ml-3">
+            💡 Hint
+        </button>
+    </div>
+
+    <div id="hintAlert" class="alert alert-info fade show d-none" role="alert">
+        To remove a Delivery Note from an Order, set the <strong>Value</strong> to <em>0</em> or leave it empty.
+    </div>
+
     <table id="table" class="table table-bordered table-striped table-hover text-center datagrid excelExport">
         <thead>
         <tr>
@@ -50,7 +59,8 @@
             <td data-label="DELIVERY NOTES">
                 {% for delivery_note in order.delivery_notes.all %}
 
-                    <span  style="cursor: pointer; color: darkred" class="delivery-note " data-note="{{ delivery_note.delivery_note_number }}"
+                    <span style="cursor: pointer; color: darkred" class="delivery-note "
+                          data-note="{{ delivery_note.delivery_note_number }}"
                           onclick="goToNote({{ delivery_note.id }})">
                  {{ delivery_note.delivery_note_number }}
                 </span><br>
@@ -72,11 +82,23 @@
     <script>
         const ordersId = JSON.parse(document.getElementById('orders-data').textContent);
 
+
         function goToNote(noteId) {
             window.location.href = `/deliveryNote/update/${noteId}`;  // или
         }
 
         function exportToExcel() {
+            if (!ordersId || ordersId.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No orders selected',
+                    text: 'Please select orders to export.',
+                    confirmButtonText: 'OK',
+                    timer: 5000,
+                    timerProgressBar: true
+                });
+                return;
+            }
             const table = document.getElementById('table');
             let workbook = XLSX.utils.table_to_book(table, {raw: true});
             XLSX.writeFile(workbook, 'export.xlsx');
@@ -124,6 +146,17 @@
             }
             return cookieValue;
         }
+    </script>
+
+    <script>
+        document.getElementById('hintBtn').addEventListener('click', function () {
+            const hint = document.getElementById('hintAlert');
+            hint.classList.remove('d-none');
+
+            setTimeout(() => {
+                hint.classList.add('d-none');
+            }, 8000);
+        });
     </script>
 
 {% endblock %}

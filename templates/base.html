@@ -16,6 +16,7 @@
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/sweet-alert.js' %}"></script>
     <script src="{% static 'js/all.js' %}"></script>
+    <script src="{% static 'js/export_excel.js' %}"></script>
 
     <style>
         {
@@ -31,19 +32,56 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <a class="navbar-brand" href="#">MySite</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand font-weight-bold d-flex align-items-center" href="/">
+            <span style="font-size: 1.5rem;">🚚</span>&nbsp;TrackLine
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
+            <ul class="navbar-nav text-center">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'order_list' %}">Orders</a>
+                </li>
+                <li class="nav-item d-flex align-items-center text-white px-2">|</li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'delivery_note_list' %}">Delivery Notes</a>
+                </li>
+                <li class="nav-item d-flex align-items-center text-white px-2">|</li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'package_list' %}">Packages</a>
+                </li>
+                <li class="nav-item d-flex align-items-center text-white px-2">|</li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'plants_list' %}">Plants</a>
+                </li>
+
             </ul>
         </div>
+
+        <!-- User dropdown stays right -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    👤 {{ request.user.first_name }}{{ request.user.last_name }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
+                </div>
+            </li>
+        </ul>
     </div>
 </nav>
-
 <div class="container-fluid mt-4">
     {% block content %}{% endblock %}
 </div>

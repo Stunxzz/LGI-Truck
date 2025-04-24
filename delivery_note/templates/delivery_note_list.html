@@ -5,7 +5,7 @@
 
 
 
-    <div class="table-responsive mx-auto mt-5" style="width: 90%;">
+    <div class="table-responsive mx-auto mt-5" style="width: 100%;">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>📦 Delivery Notes</h3>
         <a href="{% url 'create_delivery_note' %}" class="btn btn-success">
@@ -25,6 +25,7 @@
                     <th class="text-center">Height</th>
                     <th class="text-center">Weight</th>
                     <th class="text-center">Value</th>
+                    <th class="text-center">Created by</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -41,6 +42,7 @@
                         <td class="text-center" data-label="Height">{{ note.total_height }}</td>
                         <td class="text-center" data-label="Weight">{{ note.total_weight }}</td>
                         <td class="text-center" data-label="Value">{{ note.value|default_if_none:"N/A" }}</td>
+                        <td class="text-center" data-label="Created by">{{ note.created_by.first_name }} {{ note.created_by.last_name }}</td>
                         <td class="text-center" data-label="Actions">
                             <a href="{% url 'update_delivery_note' note.pk %}" class="btn btn-sm btn-outline-primary">
                                 ✏️ Edit

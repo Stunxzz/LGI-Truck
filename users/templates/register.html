@@ -46,7 +46,14 @@
 
             <button type="submit" class="btn btn-primary btn-block">Register</button>
         </form>
+
+        <div class="text-center mt-3">
+            <p class="mb-1">Already have an account?</p>
+            <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm">Back to Login</a>
+        </div>
     </div>
-<script src="{% static 'js/error_list.js' %}"></script>
+
+    <script src="{% static 'js/error_list.js' %}"></script>
 </body>
+
 </html>

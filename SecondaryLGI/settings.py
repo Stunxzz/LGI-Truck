@@ -129,7 +129,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = ['static']
 AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = 'package_list'
+LOGIN_REDIRECT_URL = 'delivery_note_list'
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
 # Default primary key field type

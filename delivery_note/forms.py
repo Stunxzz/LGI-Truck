@@ -1,7 +1,7 @@
-
 import datetime
 from django import forms
 from .models import DeliveryNote, PlantTransfer, Package
+
 
 class DeliveryNoteForm(forms.ModelForm):
     up = forms.ChoiceField(
@@ -31,35 +31,46 @@ class DeliveryNoteForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # изваждаме user от kwargs
+
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-
-        # Ако сме в CreateView
         if not self.instance.pk:
             loading = self.get_next_working_day(datetime.date.today())
             self.fields['loading_date'].initial = loading
             self.fields['unloading_date'].initial = loading + datetime.timedelta(days=7)
 
-        # Bootstrap и placeholder-и
         for name, field in self.fields.items():
-            field.widget.attrs.update({
-                'class': 'form-control',
-            })
+            field.widget.attrs.update({'class': 'form-control'})
+        self.fields['total_height'].widget.attrs['placeholder'] = 'in M'
+        self.fields['total_weight'].widget.attrs['placeholder'] = 'in KG'
 
+        # 🔐 Контрол по order.status
+        order = getattr(self.instance, 'order', None)
+        order_status = getattr(order, 'status', None)
 
-        if self.instance.pk and (self.user.role == 'admin' or self.user.role == 'expeditor'):
-            self.fields['value'].widget.attrs['class'] = 'form-control'
-        else:
-            self.fields['value'].widget.attrs['class'] = 'form-control d-none'
+        if order_status == 1:
+            # Цялата форма е само за четене
+            for field in self.fields.values():
+                field.disabled = True
+                field.widget.attrs['readonly'] = True
 
-        if self.user.role == 'expeditor':
+        elif order_status == 0:
+            # Само value се редактира
             for name, field in self.fields.items():
                 if name != 'value':
-                    field.widget.attrs['readonly'] = True
                     field.disabled = True
-        elif self.user.role == 'dispatcher':
-            self.fields.pop('value', None)
+                    field.widget.attrs['readonly'] = True
+
+
+        elif not order:
+            if self.user.role == 'expeditor':
+                for name, field in self.fields.items():
+                    if name != 'value':
+                        field.widget.attrs['readonly'] = True
+                        field.disabled = True
+            elif self.user.role == 'dispatcher':
+                self.fields.pop('value', None)
 
     def clean_delivery_note_number(self):
         number = self.cleaned_data['delivery_note_number']
